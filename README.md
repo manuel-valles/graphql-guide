@@ -23,3 +23,8 @@ A complete guide about GraphQL, using Node.js, Prisma, authentication, Apollo Cl
     ![input-type-example](./graphql-basics/resources/input-type-example.png)
 
   - When you delete some data you need to delete also the existing related data. For example, if you delete a user, you also have to delete the posts and comments created by that user.
+
+- You can break the type definitions (`typeDefs`) out into their own file which is the preferred approach for a real world production graphQL applications (e.g. `schema.grapqhql`).
+- You can set up `context` for the application that will be shared across your app like the mock data (db).
+
+- **NOTE**: By default, `nodemon` looks for files with the .js, .mjs, .coffee, .litcoffee, and .json extensions. However, you can specify your own list with the `-e` (or `--ext`) switch like so: `nodemon src/index.js --ext js,graphql --exec babel-node`
