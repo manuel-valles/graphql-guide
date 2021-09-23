@@ -1,8 +1,6 @@
 import { GraphQLServer } from 'graphql-yoga';
 
-// Scalar types (single values): ID, String, Int, Float, Boolean
-
-// Demo users data
+// Mock data
 const users = [
   {
     id: '1',
@@ -17,6 +15,33 @@ const users = [
   },
 ];
 
+const posts = [
+  {
+    id: '10',
+    title: 'GraphQL 110',
+    body: 'This is how to use GraphQL.',
+    published: true,
+    author: '1',
+  },
+  {
+    id: '11',
+    title: 'GraphQL 111',
+    body: 'This is about advanced GraphQL.',
+    published: false,
+    author: '1',
+  },
+  {
+    id: '12',
+    title: 'Programming Music',
+    body: '',
+    published: false,
+    author: '2',
+  },
+];
+
+const isMatch = (query, elementToMatch) =>
+  elementToMatch.toLocaleLowerCase().includes(query.toLocaleLowerCase());
+
 // Type definitions (schema)
 const typeDefs = `
     type Query {
@@ -24,6 +49,7 @@ const typeDefs = `
         add(numbers: [Int!]!): Float!
         grades: [Int!]!
         users(query: String): [User!]!
+        posts(query: String): [Post!]!
         me: User!
     }
 
@@ -32,6 +58,15 @@ const typeDefs = `
         name: String!
         email: String!
         age: Int
+        posts: [Post!]!
+    }
+
+    type Post {
+      id: ID!
+      title: String!
+      body: String!
+      published: Boolean!
+      author: User!
     }
 `;
 
@@ -43,17 +78,27 @@ const resolvers = {
     add: (parent, { numbers }, ctx, info) => numbers.reduce((a, b) => a + b, 0),
     grades: (parent, args, ctx, info) => [99, 88],
     users: (parent, { query }, ctx, info) =>
+      query ? users.filter((user) => isMatch(query, user.name)) : users,
+    posts: (parent, { query }, ctx, info) =>
       query
-        ? users.filter((user) =>
-            user.name.toLocaleLowerCase().includes(query.toLocaleLowerCase())
+        ? posts.filter(
+            (post) => isMatch(query, post.title) || isMatch(query, post.body)
           )
-        : users,
+        : posts,
     me: () => ({
       id: '123',
       name: 'Manuel Valles',
       email: 'manukempo@gmail.com',
       age: null,
     }),
+  },
+  Post: {
+    author: (parent, args, ctx, info) =>
+      users.find((user) => user.id === parent.author),
+  },
+  User: {
+    posts: (parent, args, ctx, info) =>
+      posts.filter((post) => post.author === parent.id),
   },
 };
 

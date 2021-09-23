@@ -6,6 +6,8 @@ A complete guide about GraphQL, using Node.js, Prisma, authentication, Apollo Cl
 
 - Babel CLI and presets: `$ npm install --save-dev @babel/core @babel/cli @babel/preset-env @babel/node`
 - Your own GraphQL API with [GraphQL Yoga](https://github.com/dotansimha/graphql-yoga): `$ npm i graphql-yoga`
-- Example basic query with scalar types, custom types and Arrays:
+- Example basic query with scalar types (single values: ID, String, Int, Float, Boolean), custom types and arrays:
 
   ![graphql-yoga-example](./graphql-basics/resources/graphql-yoga-example.png)
+
+- When we set a field whose value is one of our custom fields, we need to define a function/method that tells GraphQL how to get it. To do so, we need to define a new route on resolvers that matches with the parent property (e.g. `Post`), and set the methods for each of our fields that actually goes to another custom type (e.g. `author`).
