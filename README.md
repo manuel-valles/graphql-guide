@@ -21,3 +21,5 @@ A complete guide about GraphQL, using Node.js, Prisma, authentication, Apollo Cl
   - Input types can only have scalar values. So it cannot have a custom (object) type. Example `data` input with type `CreatePostInput`:
 
     ![input-type-example](./graphql-basics/resources/input-type-example.png)
+
+  - When you delete some data you need to delete also the existing related data. For example, if you delete a user, you also have to delete the posts and comments created by that user.
