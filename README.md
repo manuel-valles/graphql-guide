@@ -11,7 +11,15 @@ A complete guide about GraphQL, using Node.js, Prisma, authentication, Apollo Cl
 
 ### 1.2. Schemas and Queries
 
-- Example basic query with scalar types (single values: ID, String, Int, Float, Boolean), custom types and arrays:
+- A great feature of GraphQL is that it's self-documenting. GraphQL APIs expose a **schema** that describes exactly what operations could be performed on the API and what data could be requested. This prevents the need for manual documentation, and it enables tools like GraphQL Playground to validate the structure of your operations before ever sending the operation to the server.
+
+- There are three operations that can be performed in GraphQL:
+
+  - **Query**: to fetch data;
+  - **Mutation**: to change data;
+  - **Subscription**: to watch data for changes.
+
+- A basic query with `scalar types` (single values: ID, String, Int, Float, Boolean), `custom types` and `arrays` would be as follows:
 
   ![graphql-yoga-example](./graphql-basics/resources/graphql-yoga-example.png)
 
@@ -20,7 +28,8 @@ A complete guide about GraphQL, using Node.js, Prisma, authentication, Apollo Cl
 ### 1.3. Mutations
 
 - uuid [package](https://www.npmjs.com/package/uuid): `$ npm i uuid`
-- Example basic mutation:
+
+- A basic mutation would be as follows:
 
   ![mutation-example](./graphql-basics/resources/mutation-example.png)
 
