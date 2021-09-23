@@ -17,3 +17,7 @@ A complete guide about GraphQL, using Node.js, Prisma, authentication, Apollo Cl
   - Example basic mutation:
 
     ![mutation-example](./graphql-basics/resources/mutation-example.png)
+
+  - Input types can only have scalar values. So it cannot have a custom (object) type. Example `data` input with type `CreatePostInput`:
+
+    ![input-type-example](./graphql-basics/resources/input-type-example.png)
