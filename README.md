@@ -6,8 +6,8 @@ A complete guide about GraphQL, using Node.js, Prisma, authentication, Apollo Cl
 
 ### 1.1. Setup
 
-- Babel CLI and presets: `$ npm install --save-dev @babel/core @babel/cli @babel/preset-env @babel/node`
-- Your own GraphQL API with [GraphQL Yoga](https://github.com/dotansimha/graphql-yoga): `$ npm i graphql-yoga`
+- GraphQL is nothing more than a specification for how GraphQL works. It's not an implementation. Therefore, before you can use it, you need to pick an implementation that works with the language/stack you're using. With Node.js, [GraphQL Yoga](https://github.com/dotansimha/graphql-yoga) is a great option: `$ npm i graphql-yoga`.
+- To take advantage of all the latest JavaScript features such as the ES6 import/export syntax, you should set up Babel (CLI and presets): `$ npm install --save-dev @babel/core @babel/cli @babel/preset-env @babel/node`
 
 ### 1.2. Schemas and Queries
 
