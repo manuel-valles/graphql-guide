@@ -21,7 +21,7 @@ A complete guide about GraphQL, using Node.js, Prisma, authentication, Apollo Cl
 
 - A basic query with `scalar types` (single values: ID, String, Int, Float, Boolean), `custom types` and `arrays` would be as follows:
 
-  ![graphql-yoga-example](./graphql-basics/resources/graphql-yoga-example.png)
+  ![graphql-yoga-example](./resources/graphql-yoga-example.png)
 
 - When we set a field whose value is one of our custom fields, we need to define a function/method that tells GraphQL how to get it. To do so, we need to define a new route on resolvers that matches with the parent property (e.g. `Post`), and set the methods for each of our fields that actually goes to another custom type (e.g. `author`).
 
@@ -31,11 +31,11 @@ A complete guide about GraphQL, using Node.js, Prisma, authentication, Apollo Cl
 
 - A basic mutation would be as follows:
 
-  ![mutation-example](./graphql-basics/resources/mutation-example.png)
+  ![mutation-example](./resources/mutation-example.png)
 
 - Input types can only have scalar values. So it cannot have a custom (object) type. Example `data` input with type `CreatePostInput`:
 
-  ![input-type-example](./graphql-basics/resources/input-type-example.png)
+  ![input-type-example](./resources/input-type-example.png)
 
 - When you delete some data you need to delete also the existing related data. For example, if you delete a user, you also have to delete the posts and comments created by that user.
 
@@ -54,3 +54,43 @@ A complete guide about GraphQL, using Node.js, Prisma, authentication, Apollo Cl
   - `PubSub` instance is a simple pubsub implementation, based on `EventEmitter`;
   - You must implement your Subscriptions type resolver, using the `pubsub.asyncIterator` to map the event you need, e.g. `count`;
   - `pubsub.publish` is what allows to publish new data to all of the subscribers. The first argument is the channel name that must match it up exactly with the supported channel, e.g. `count`, and the second argument will be an object (aligned with the `Subcription` type in the `schema.graphql` with the data that should get sent to the client.
+
+## 2. Database Storage
+
+- [Prisma](https://www.prisma.io/) is a GraphQL specific ORM (Object Relational Mapping) that makes it easy to integrate data storage into your GraphQL apps.
+- [Prisma setup](https://www.prisma.io/docs/getting-started/setup-prisma/add-to-existing-project/relational-databases-node-postgres).
+
+### 2.1. Setup
+
+- An easy and free way to create a Postgres DB in production is [Heroku](https://dashboard.heroku.com/apps):
+
+  - Create an app;
+  - Add a resource/datastore: `Overview > Add-ons > Heroku Postgres (Hobby Dev)`;
+  - The credentials can be found in the `Settings` tab of the created datastore.
+
+- You can use a GUI like the [pgAdmin](https://www.postgresql.org/ftp/pgadmin/pgadmin4/v5.7/windows/):
+
+  - `Add New Server`:
+    - General: any name, e.g.: `Heroku Pg`;
+    - Connection: copy and paste the info from the previous datastore - `host`,`database`, `username` `password` and tick `Save password?`.
+  - Look for your DB name under `Servers > Heroku Pg > Databases (2k) > [databaseName]`
+
+- Duplicate the existing folder/project (`graphql-basics`) and rename it to `graphql-prisma`, for example.
+
+- Add the Prisma CLI as a development dependency to your project: `$ npm i -D prisma` and check if all is set up: `$ npx prisma -v`.
+
+- Set up your Prisma project by creating your Prisma schema file template with the following command: `$ npx prisma init`.
+
+- Change the `DATABASE_URL` for the Heroku `URI` datastore in the `.env` generated file.
+
+- Use `Prisma Migrate` to create the tables in your database. Add the following Prisma data model to your Prisma schema in `prisma/schema.prisma`:
+
+  ```js
+      model User {
+        id      Int      @id @default(autoincrement())
+        email   String   @unique
+        name    String?
+      }
+  ```
+
+- **IMPORTANT**: If you are currently prototyping and not in production, and don't care about the generated migration files, you can also run `prisma db push` instead of the `prisma migrate dev` command: `$ prisma db push --preview-feature`
