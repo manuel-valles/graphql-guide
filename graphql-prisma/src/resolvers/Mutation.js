@@ -1,39 +1,42 @@
 import { v4 as uuidv4 } from 'uuid';
-import { Prisma } from '@prisma/client';
 
 const Mutation = {
   createUser: async (parent, { data }, { prisma }, info) => {
-    let user;
+    const emailTaken = await prisma.user.count({
+      where: { email: data.email },
+    });
 
-    try {
-      user = await prisma.user.create({ data });
-    } catch (e) {
-      if (
-        e instanceof Prisma.PrismaClientKnownRequestError &&
-        e.code === 'P2002'
-      ) {
-        throw new Error('Email taken');
-      }
-      throw e;
-    }
+    if (emailTaken) throw new Error('Email taken');
 
-    return user;
+    return await prisma.user.create({ data });
   },
 
-  updateUser: async (parent, { id, data }, { prisma }, info) =>
-    await prisma.user.update({
-      where: {
-        id: +id,
-      },
-      data,
-    }),
+  updateUser: async (parent, { id, data }, { prisma }, info) => {
+    const user = await prisma.user.findUnique({ where: { id } });
 
-  deleteUser: async (parent, args, { prisma }, info) =>
-    await prisma.user.delete({
-      where: {
-        id: +args.id,
-      },
-    }),
+    if (!user) throw new Error('User not found');
+
+    if (data.email) {
+      const emailTaken = await prisma.user.count({
+        where: { email: data.email },
+      });
+
+      if (emailTaken) throw new Error('Email taken');
+    }
+
+    return await prisma.user.update({
+      where: { id },
+      data,
+    });
+  },
+
+  deleteUser: async (parent, { id }, { prisma }, info) => {
+    const user = await prisma.user.findUnique({ where: { id } });
+
+    if (!user) throw new Error('User not found');
+
+    return await prisma.user.delete({ where: { id } });
+  },
 
   createPost: (parent, { data }, { db, pubsub }, info) => {
     const userExists = db.users.some((user) => user.id === data.author);
