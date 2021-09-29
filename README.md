@@ -98,3 +98,9 @@ A complete guide about GraphQL, using Node.js, Prisma, authentication, Apollo Cl
 - **Prisma Studio** is a visual editor for the data in your database: `$ npx prisma studio`.
 
 - PostgreSQL uses deterministic collation by default, which means that filtering is case-sensitive. To support `case-insensitive` filtering, use the `mode: 'insensitive'` property on a per-field basis.
+
+- In `2.26.0` and later, you can define **referential actions** on your relation fields. Referential actions determine what should happen to a record when a related record is deleted or updated. In the following example, adding `onDelete: Cascade` to the author field on the Post model means that deleting the User record will also delete all related Post records. [Further Info](https://www.prisma.io/docs/concepts/components/prisma-schema/relations/referential-actions)
+
+  ```js
+    author  User  @relation(fields: [authorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  ```

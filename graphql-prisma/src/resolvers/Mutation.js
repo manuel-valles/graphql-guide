@@ -28,27 +28,12 @@ const Mutation = {
       data,
     }),
 
-  deleteUser: async (parent, args, { prisma }, info) => {
-    const userId = +args.id;
-
-    await prisma.comment.deleteMany({
+  deleteUser: async (parent, args, { prisma }, info) =>
+    await prisma.user.delete({
       where: {
-        authorId: userId,
+        id: +args.id,
       },
-    });
-
-    await prisma.post.deleteMany({
-      where: {
-        authorId: userId,
-      },
-    });
-
-    return await prisma.user.delete({
-      where: {
-        id: userId,
-      },
-    });
-  },
+    }),
 
   createPost: (parent, { data }, { db, pubsub }, info) => {
     const userExists = db.users.some((user) => user.id === data.author);
