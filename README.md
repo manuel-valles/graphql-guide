@@ -90,7 +90,7 @@ A complete guide about GraphQL, using Node.js, Prisma, authentication, Apollo Cl
 
 - Change the `DATABASE_URL` for the Heroku `URI` datastore in the `.env` generated file.
 
-- **Prisma Migrate** is an imperative database schema migration tool that enables you to keep your database schema in sync with your Prisma schema as it evolves and to maintain existing data in your database. Please install first the Prisma Client to avoid console errors: `$ npm i -D @prisma/client`
+- **Prisma Migrate** is an imperative database schema migration tool that enables you to keep your database schema in sync with your Prisma schema as it evolves and to maintain existing data in your database. Please install first the [Prisma Client](https://www.prisma.io/docs/reference/api-reference/prisma-client-reference) to avoid console errors: `$ npm i -D @prisma/client`
 
   - If you're doing the Docker approach, you can run: `$ npx prisma migrate dev --name "init"`
   - If you are using Heroku, currently prototyping and don't care about the generated migration files, you can also run: `$ prisma db push --preview-feature`
