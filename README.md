@@ -62,11 +62,18 @@ A complete guide about GraphQL, using Node.js, Prisma, authentication, Apollo Cl
 
 ### 2.1. Setup
 
-- An easy and free way to create a Postgres DB in production is [Heroku](https://dashboard.heroku.com/apps):
+- You can create a Postgres DB:
 
-  - Create an app;
-  - Add a resource/datastore: `Overview > Add-ons > Heroku Postgres (Hobby Dev)`;
-  - The credentials can be found in the `Settings` tab of the created datastore.
+  - Locally with Docker (`graphql-prisma/docker-compose.yml`):
+
+    - `$ docker-compose up -d`
+    - `$ docker ps`
+
+  - Production (free) with [Heroku](https://dashboard.heroku.com/apps):
+
+    - Create an app;
+    - Add a resource/datastore: `Overview > Add-ons > Heroku Postgres (Hobby Dev)`;
+    - The credentials can be found in the `Settings` tab of the created datastore.
 
 - You can use a GUI like the [pgAdmin](https://www.postgresql.org/ftp/pgadmin/pgadmin4/v5.7/windows/):
 
@@ -83,14 +90,9 @@ A complete guide about GraphQL, using Node.js, Prisma, authentication, Apollo Cl
 
 - Change the `DATABASE_URL` for the Heroku `URI` datastore in the `.env` generated file.
 
-- Use `Prisma Migrate` to create the tables in your database. Add the following Prisma data model to your Prisma schema in `prisma/schema.prisma`:
+- **Prisma Migrate** is an imperative database schema migration tool that enables you to keep your database schema in sync with your Prisma schema as it evolves and to maintain existing data in your database. Please install first the Prisma Client to avoid console errors: `$ npm i -D @prisma/client`
 
-  ```js
-      model User {
-        id      Int      @id @default(autoincrement())
-        email   String   @unique
-        name    String?
-      }
-  ```
+  - If you're doing the Docker approach, you can run: `$ npx prisma migrate dev --name "init"`
+  - If you are using Heroku, currently prototyping and don't care about the generated migration files, you can also run: `$ prisma db push --preview-feature`
 
-- **IMPORTANT**: If you are currently prototyping and not in production, and don't care about the generated migration files, you can also run `prisma db push` instead of the `prisma migrate dev` command: `$ prisma db push --preview-feature`
+- **Prisma Studio** is a visual editor for the data in your database: `$ npx prisma studio`

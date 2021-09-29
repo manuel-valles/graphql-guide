@@ -10,5 +10,28 @@ datasource db {
 model User {
   id    Int     @id @default(autoincrement())
   email String  @unique
-  name  String?
+  name  String
+  posts Post[]
+  comments Comment[]
 }
+
+model Post {
+  id    Int     @id @default(autoincrement())
+  title String
+  body String
+  published Boolean
+  author User @relation(fields: [authorId], references: [id])
+  authorId Int
+  comments Comment[]
+}
+
+model Comment {
+  id    Int     @id @default(autoincrement())
+  text String
+  author User @relation(fields: [authorId], references: [id])
+  authorId Int
+  post Post @relation(fields: [postId], references: [id])
+  postId Int
+}
+
+
