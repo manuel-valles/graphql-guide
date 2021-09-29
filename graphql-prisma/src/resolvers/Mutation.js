@@ -1,59 +1,55 @@
 import { v4 as uuidv4 } from 'uuid';
+import { Prisma } from '@prisma/client';
 
 const Mutation = {
-  createUser: (parent, { data }, { db }, info) => {
-    const emailTaken = db.users.some((user) => user.email === data.email);
-    if (emailTaken) throw new Error('Email taken');
+  createUser: async (parent, { data }, { prisma }, info) => {
+    let user;
 
-    const user = {
-      id: uuidv4(),
-      ...data,
-    };
-
-    db.users.push(user);
-
-    return user;
-  },
-  updateUser: (parent, { id, data }, { db }, info) => {
-    const user = db.users.find((user) => user.id === id);
-
-    if (!user) throw new Error('User not found');
-
-    if (typeof data.email === 'string') {
-      const emailTaken = db.users.some((user) => user.email === data.email);
-
-      if (emailTaken) throw new Error('Email taken');
-
-      user.email = data.email;
+    try {
+      user = await prisma.user.create({ data });
+    } catch (e) {
+      if (
+        e instanceof Prisma.PrismaClientKnownRequestError &&
+        e.code === 'P2002'
+      ) {
+        throw new Error('Email taken');
+      }
+      throw e;
     }
 
-    if (typeof data.name === 'string') user.name = data.name;
-
-    if (typeof data.age !== 'undefined') user.age = data.age;
-
     return user;
   },
-  deleteUser: (parent, args, { db }, info) => {
-    const userIndex = db.users.findIndex((user) => user.id === args.id);
 
-    if (userIndex === -1) throw new Error('User not found');
+  updateUser: async (parent, { id, data }, { prisma }, info) =>
+    await prisma.user.update({
+      where: {
+        id: +id,
+      },
+      data,
+    }),
 
-    const deletedUsers = db.users.splice(userIndex, 1);
+  deleteUser: async (parent, args, { prisma }, info) => {
+    const userId = +args.id;
 
-    db.posts = db.posts.filter((post) => {
-      const match = post.author === args.id;
-
-      if (match) {
-        db.comments = db.comments.filter((comment) => comment.post !== post.id);
-      }
-
-      return !match;
+    await prisma.comment.deleteMany({
+      where: {
+        authorId: userId,
+      },
     });
 
-    db.comments = db.comments.filter((comment) => comment.author !== args.id);
+    await prisma.post.deleteMany({
+      where: {
+        authorId: userId,
+      },
+    });
 
-    return deletedUsers[0];
+    return await prisma.user.delete({
+      where: {
+        id: userId,
+      },
+    });
   },
+
   createPost: (parent, { data }, { db, pubsub }, info) => {
     const userExists = db.users.some((user) => user.id === data.author);
 
