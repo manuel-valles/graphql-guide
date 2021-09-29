@@ -95,4 +95,6 @@ A complete guide about GraphQL, using Node.js, Prisma, authentication, Apollo Cl
   - If you're doing the Docker approach, you can run: `$ npx prisma migrate dev --name "init"`
   - If you are using Heroku, currently prototyping and don't care about the generated migration files, you can also run: `$ prisma db push --preview-feature`
 
-- **Prisma Studio** is a visual editor for the data in your database: `$ npx prisma studio`
+- **Prisma Studio** is a visual editor for the data in your database: `$ npx prisma studio`.
+
+- PostgreSQL uses deterministic collation by default, which means that filtering is case-sensitive. To support `case-insensitive` filtering, use the `mode: 'insensitive'` property on a per-field basis.

@@ -1,17 +1,12 @@
-import { prisma } from '.prisma/client';
-
-const isMatch = (query, elementToMatch) =>
-  elementToMatch.toLocaleLowerCase().includes(query.toLocaleLowerCase());
-
 const Query = {
-  users: (parent, { query }, { prisma }, info) =>
-    query
+  users: async (parent, { query }, { prisma }, info) =>
+    (await query)
       ? prisma.user.findMany({
           where: { name: { contains: query, mode: 'insensitive' } },
         })
       : prisma.user.findMany(),
-  posts: (parent, { query }, { prisma }, info) =>
-    query
+  posts: async (parent, { query }, { prisma }, info) =>
+    (await query)
       ? prisma.post.findMany({
           where: {
             OR: [
@@ -21,7 +16,8 @@ const Query = {
           },
         })
       : prisma.post.findMany(),
-  comments: (parent, args, { prisma }, info) => prisma.comment.findMany(),
+  comments: async (parent, args, { prisma }, info) =>
+    await prisma.comment.findMany(),
 };
 
 export { Query as default };

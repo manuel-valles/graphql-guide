@@ -1,8 +1,8 @@
 const Post = {
-  author: (parent, args, { prisma }, info) =>
-    prisma.user.findUnique({ where: { id: parent.authorId } }),
-  comments: (parent, args, { prisma }, info) =>
-    prisma.comment.findMany({ where: { postId: parent.id } }),
+  author: async (parent, args, { prisma }, info) =>
+    await prisma.user.findUnique({ where: { id: parent.authorId } }),
+  comments: async (parent, args, { prisma }, info) =>
+    await prisma.comment.findMany({ where: { postId: parent.id } }),
 };
 
 export { Post as default };
