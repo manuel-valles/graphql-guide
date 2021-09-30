@@ -1,203 +1,99 @@
-#
 type Query {
-  #
   users(query: String): [User!]!
-
-  #
   posts(query: String): [Post!]!
-
-  #
   comments: [Comment!]!
 }
 
-#
 type User {
-  #
   id: Int!
-
-  #
   name: String!
-
-  #
   email: String!
-
-  #
+  password: String!
   posts: [Post!]!
-
-  #
   comments: [Comment!]!
 }
 
-#
 type Post {
-  #
   id: Int!
-
-  #
   title: String!
-
-  #
   body: String!
-
-  #
   published: Boolean!
-
-  #
   author: User!
-
-  #
   comments: [Comment!]!
 }
 
-#
 type Comment {
-  #
   id: Int!
-
-  #
   text: String!
-
-  #
   author: User!
-
-  #
   post: Post!
 }
 
-#
 type Mutation {
-  #
   createUser(data: CreateUserInput!): User!
-
-  #
   updateUser(id: Int!, data: UpdateUserInput!): User!
-
-  #
   deleteUser(id: Int!): User!
-
-  #
   createPost(data: CreatePostInput!): Post!
-
-  #
   updatePost(id: Int!, data: UpdatePostInput!): Post!
-
-  #
   deletePost(id: Int!): Post!
-
-  #
   createComment(data: CreateCommentInput!): Comment!
-
-  #
   updateComment(id: Int!, data: UpdateCommentInput!): Comment!
-
-  #
   deleteComment(id: Int!): Comment!
 }
 
-#
 input CreateUserInput {
-  #
   name: String!
-
-  #
   email: String!
-
-  #
+  password: String!
   age: Int
 }
 
-#
 input UpdateUserInput {
-  #
   name: String
-
-  #
   email: String
-
-  #
   age: Int
 }
 
-#
 input CreatePostInput {
-  #
   title: String!
-
-  #
   body: String!
-
-  #
   published: Boolean!
-
-  #
   author: Int!
 }
 
-#
 input UpdatePostInput {
-  #
   title: String
-
-  #
   body: String
-
-  #
   published: Boolean
 }
 
-#
 input CreateCommentInput {
-  #
   text: String!
-
-  #
   author: Int!
-
-  #
   post: Int!
 }
 
-#
 input UpdateCommentInput {
-  #
   text: String
 }
 
-#
 type Subscription {
-  #
   comment(postId: Int!): CommentSubscriptionPayload!
-
-  #
   post: PostSubscriptionPayload!
 }
 
-#
 type CommentSubscriptionPayload {
-  #
   mutation: MutationType!
-
-  #
   data: Comment!
 }
 
-#
 enum MutationType {
-  #
   CREATED
-
-  #
   UPDATED
-
-  #
   DELETED
 }
 
-#
 type PostSubscriptionPayload {
-  #
   mutation: MutationType!
-
-  #
   data: Post!
 }

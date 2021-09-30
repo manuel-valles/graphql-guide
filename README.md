@@ -104,3 +104,7 @@ A complete guide about GraphQL, using Node.js, Prisma, authentication, Apollo Cl
   ```js
     author  User  @relation(fields: [authorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   ```
+
+## 3. Authentication with GraphQL
+
+- [Bcryptjs](https://www.npmjs.com/package/bcryptjs)
