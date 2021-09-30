@@ -2,6 +2,9 @@ type Query {
   users(query: String): [User!]!
   posts(query: String): [Post!]!
   comments: [Comment!]!
+  post(id: Int!): Post!
+  me: User!
+  myPosts(query: String): [Post!]!
 }
 
 type User {
