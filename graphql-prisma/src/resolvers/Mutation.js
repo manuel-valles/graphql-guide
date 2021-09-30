@@ -23,8 +23,25 @@ const Mutation = {
     });
 
     return {
-      token: sign({ userId: user.id }, process.env.APP_SECRET),
       user,
+      token: sign({ userId: user.id }, process.env.APP_SECRET),
+    };
+  },
+
+  login: async (parent, { data: { email, password } }, { prisma }, info) => {
+    const user = await prisma.user.findUnique({
+      where: { email },
+    });
+
+    if (!user) throw new Error('Invalid credentials');
+
+    const valid = await bcrypt.compare(password, user.password);
+
+    if (!valid) throw new Error('Invalid credentials');
+
+    return {
+      user,
+      token: sign({ userId: user.id }, process.env.APP_SECRET),
     };
   },
 
