@@ -30,7 +30,7 @@ type Comment {
 }
 
 type Mutation {
-  createUser(data: CreateUserInput!): User!
+  createUser(data: CreateUserInput!): AuthPayload!
   updateUser(id: Int!, data: UpdateUserInput!): User!
   deleteUser(id: Int!): User!
   createPost(data: CreatePostInput!): Post!
@@ -39,6 +39,11 @@ type Mutation {
   createComment(data: CreateCommentInput!): Comment!
   updateComment(id: Int!, data: UpdateCommentInput!): Comment!
   deleteComment(id: Int!): Comment!
+}
+
+type AuthPayload {
+  token: String!
+  user: User!
 }
 
 input CreateUserInput {

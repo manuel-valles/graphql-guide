@@ -107,4 +107,5 @@ A complete guide about GraphQL, using Node.js, Prisma, authentication, Apollo Cl
 
 ## 3. Authentication with GraphQL
 
-- [Bcryptjs](https://www.npmjs.com/package/bcryptjs)
+- [Bcryptjs package](https://www.npmjs.com/package/bcryptjs)
+- [JSON Web Token (JWT) package](https://www.npmjs.com/package/jsonwebtoken)
