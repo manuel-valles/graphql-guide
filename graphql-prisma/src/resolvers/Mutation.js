@@ -38,17 +38,23 @@ const Mutation = {
     return await prisma.user.delete({ where: { id } });
   },
 
-  createPost: (parent, { data }, { db, pubsub }, info) => {
-    const userExists = db.users.some((user) => user.id === data.author);
+  createPost: async (parent, { data }, { prisma, pubsub }, info) => {
+    const userExists = await prisma.user.findUnique({
+      where: { id: data.author },
+    });
 
     if (!userExists) throw new Error('User not found');
 
-    const post = {
-      id: uuidv4(),
-      ...data,
-    };
-
-    db.posts.push(post);
+    const post = await prisma.post.create({
+      data: {
+        ...data,
+        author: {
+          connect: {
+            id: data.author,
+          },
+        },
+      },
+    });
 
     if (data.published)
       pubsub.publish('post', {
@@ -60,20 +66,15 @@ const Mutation = {
 
     return post;
   },
-  updatePost: (parent, { id, data }, { db, pubsub }, info) => {
-    const post = db.posts.find((post) => post.id === id);
-    const originalPost = { ...post };
+  updatePost: async (parent, { id, data }, { prisma, pubsub }, info) => {
+    const originalPost = await prisma.post.findUnique({ where: { id } });
 
-    if (!post) throw new Error('Post not found');
+    if (!originalPost) throw new Error('Post not found');
 
-    if (typeof data.title === 'string') post.title = data.title;
-
-    if (typeof data.body === 'string') post.body = data.body;
+    const updatedPost = await prisma.post.update({ where: { id }, data });
 
     if (typeof data.published === 'boolean') {
-      post.published = data.published;
-
-      if (originalPost.published && !post.published) {
+      if (originalPost.published && !updatedPost.published) {
         // deleted
         pubsub.publish('post', {
           post: {
@@ -81,35 +82,33 @@ const Mutation = {
             data: originalPost,
           },
         });
-      } else if (!originalPost.published && post.published) {
+      } else if (!originalPost.published && updatedPost.published) {
         // published/created
         pubsub.publish('post', {
           post: {
             mutation: 'CREATED',
-            data: post,
+            data: updatedPost,
           },
         });
       }
-    } else if (post.published) {
+    } else if (updatedPost.published) {
       // updated
       pubsub.publish('post', {
         post: {
           mutation: 'UPDATED',
-          data: post,
+          data: updatedPost,
         },
       });
     }
 
-    return post;
+    return updatedPost;
   },
-  deletePost: (parent, args, { db, pubsub }, info) => {
-    const postIndex = db.posts.findIndex((post) => post.id === args.id);
+  deletePost: async (parent, { id }, { prisma, pubsub }, info) => {
+    const postExists = await prisma.post.count({ where: { id } });
 
-    if (postIndex === -1) throw new Error('Post not found');
+    if (!postExists) throw new Error('Post not found');
 
-    const [post] = db.posts.splice(postIndex, 1);
-
-    db.comments = db.comments.filter((comment) => comment.post !== args.id);
+    const post = await prisma.post.delete({ where: { id } });
 
     if (post.published) {
       pubsub.publish('post', {
