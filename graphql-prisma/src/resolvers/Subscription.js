@@ -1,10 +1,9 @@
 const Subscription = {
   comment: {
     subscribe: async (parent, { postId }, { prisma, pubsub }, info) => {
-      // ToDo: Check if post is published
-      const post = await prisma.post.findUnique({
+      const [post] = await prisma.post.findMany({
         where: {
-          id: postId,
+          AND: [{ id: postId }, { published: true }],
         },
       });
 

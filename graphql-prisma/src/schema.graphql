@@ -32,8 +32,8 @@ type Comment {
 type Mutation {
   createUser(data: CreateUserInput!): AuthPayload!
   login(data: LoginUserInput!): AuthPayload!
-  updateUser(id: Int!, data: UpdateUserInput!): User!
-  deleteUser(id: Int!): User!
+  updateUser(data: UpdateUserInput!): User!
+  deleteUser: User!
   createPost(data: CreatePostInput!): Post!
   updatePost(id: Int!, data: UpdatePostInput!): Post!
   deletePost(id: Int!): Post!
@@ -67,7 +67,6 @@ input CreatePostInput {
   title: String!
   body: String!
   published: Boolean!
-  author: Int!
 }
 
 input UpdatePostInput {
@@ -78,7 +77,6 @@ input UpdatePostInput {
 
 input CreateCommentInput {
   text: String!
-  author: Int!
   post: Int!
 }
 
