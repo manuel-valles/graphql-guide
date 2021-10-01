@@ -106,6 +106,7 @@ const Mutation = {
 
     if (typeof data.published === 'boolean') {
       if (originalPost.published && !updatedPost.published) {
+        await prisma.comment.deleteMany({ where: { post: { id } } });
         // deleted
         pubsub.publish('post', {
           post: {
@@ -157,7 +158,9 @@ const Mutation = {
   },
   createComment: async (parent, { data }, { prisma, pubsub, request }) => {
     const userId = getUserId(request);
-    const postExists = await prisma.post.count({ where: { id: data.post } });
+    const postExists = await prisma.post.count({
+      where: { id: data.post, published: true },
+    });
 
     if (!postExists) throw new Error('Unable to find post');
 
