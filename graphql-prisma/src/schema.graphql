@@ -1,10 +1,33 @@
 type Query {
-  users(query: String, first: Int, skip: Int, after: Int): [User!]!
-  posts(query: String, first: Int, skip: Int, after: Int): [Post!]!
-  comments(first: Int, skip: Int, after: Int): [Comment!]!
+  users(
+    query: String
+    first: Int
+    skip: Int
+    after: Int
+    orderBy: UserOrderBy
+  ): [User!]!
+  posts(
+    query: String
+    first: Int
+    skip: Int
+    after: Int
+    orderBy: PostOrderBy
+  ): [Post!]!
+  comments(
+    first: Int
+    skip: Int
+    after: Int
+    orderBy: CommentOrderBy
+  ): [Comment!]!
   post(id: Int!): Post!
   me: User!
-  myPosts(query: String, first: Int, skip: Int, after: Int): [Post!]!
+  myPosts(
+    query: String
+    first: Int
+    skip: Int
+    after: Int
+    orderBy: PostOrderBy
+  ): [Post!]!
 }
 
 scalar DateTime
@@ -38,6 +61,35 @@ type Comment {
   post: Post!
   createdAt: DateTime!
   updatedAt: DateTime!
+}
+
+enum SortOrder {
+  asc
+  desc
+}
+
+input UserOrderBy {
+  id: SortOrder
+  name: SortOrder
+  email: SortOrder
+  createdAt: SortOrder
+  updatedAt: SortOrder
+}
+
+input PostOrderBy {
+  id: SortOrder
+  title: SortOrder
+  body: SortOrder
+  published: SortOrder
+  createdAt: SortOrder
+  updatedAt: SortOrder
+}
+
+input CommentOrderBy {
+  id: SortOrder
+  text: SortOrder
+  createdAt: SortOrder
+  updatedAt: SortOrder
 }
 
 type Mutation {

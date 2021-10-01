@@ -1,15 +1,16 @@
 import getUserId from '../utils/getUserId';
 
 const Query = {
-  users: async (parent, { query, first, skip, after }, { prisma }) => {
+  users: async (parent, { query, first, skip, after, orderBy }, { prisma }) => {
+    const cursor = after && {
+      id: after,
+    };
+
     const opArgs = {
       take: first,
       skip,
-      ...(after && {
-        cursor: {
-          id: after,
-        },
-      }),
+      cursor,
+      orderBy,
     };
 
     if (query) {
@@ -19,14 +20,16 @@ const Query = {
     return await prisma.user.findMany(opArgs);
   },
 
-  posts: async (parent, { query, first, skip, after }, { prisma }) => {
+  posts: async (parent, { query, first, skip, after, orderBy }, { prisma }) => {
     const cursor = after && {
       id: after,
     };
+
     const opArgs = {
       take: first,
       skip,
       cursor,
+      orderBy,
       where: {
         published: true,
       },
@@ -42,7 +45,7 @@ const Query = {
     return await prisma.post.findMany(opArgs);
   },
 
-  comments: async (parent, { first, skip, after }, { prisma }) => {
+  comments: async (parent, { first, skip, after, orderBy }, { prisma }) => {
     const cursor = after && {
       id: after,
     };
@@ -51,6 +54,7 @@ const Query = {
       take: first,
       skip,
       cursor,
+      orderBy,
     });
   },
 
@@ -77,7 +81,7 @@ const Query = {
 
   myPosts: async (
     parent,
-    { query, first, skip, after },
+    { query, first, skip, after, orderBy },
     { prisma, request }
   ) => {
     const userId = getUserId(request);
@@ -89,6 +93,7 @@ const Query = {
       take: first,
       skip,
       cursor,
+      orderBy,
       where: {
         authorId: userId,
       },
