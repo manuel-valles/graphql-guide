@@ -109,3 +109,32 @@ A complete guide about GraphQL, using Node.js, Prisma, authentication, Apollo Cl
 
 - [Bcryptjs package](https://www.npmjs.com/package/bcryptjs)
 - [JSON Web Token (JWT) package](https://www.npmjs.com/package/jsonwebtoken)
+- We need to change the application `context` to a function with a single argument that contains the information about the request where the authorization header lives. Now we can access the `request` in the resolver methods
+  ```js
+    context: (request) => ({
+      pubsub,
+      prisma,
+      request,
+    }),
+  ```
+- **GraphQL fragments** give you a reusable way to define a selection set, no longer you will have to list out all the fields for a user, post or comment every time you define your selection sets.
+
+  ```graphql
+  query {
+    users {
+      ...userFields
+      posts {
+        id
+        title
+      }
+    }
+  }
+
+  fragment userFields on User {
+    id
+    name
+    email
+  }
+  ```
+
+**IMPORTANT**: Fragments approach (`fragmentReplacements`) is no longer needed for `Prisma 2+`

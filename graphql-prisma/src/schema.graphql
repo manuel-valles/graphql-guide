@@ -10,7 +10,7 @@ type Query {
 type User {
   id: Int!
   name: String!
-  email: String!
+  email: String
   password: String!
   posts: [Post!]!
   comments: [Comment!]!
