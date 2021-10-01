@@ -138,3 +138,5 @@ A complete guide about GraphQL, using Node.js, Prisma, authentication, Apollo Cl
   ```
 
 **IMPORTANT**: Fragments approach (`fragmentReplacements`) is no longer needed for `Prisma 2+`
+
+- `withFilters` [helper](https://github.com/apollographql/graphql-subscriptions#filters) is useful when publishing data to subscribers to make sure that each subscriber gets only the data it needs.
