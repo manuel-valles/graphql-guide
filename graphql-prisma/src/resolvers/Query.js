@@ -1,10 +1,15 @@
 import getUserId from '../utils/getUserId';
 
 const Query = {
-  users: async (parent, { query, take, skip }, { prisma }) => {
+  users: async (parent, { query, first, skip, after }, { prisma }) => {
     const opArgs = {
-      take,
+      take: first,
       skip,
+      ...(after && {
+        cursor: {
+          id: after,
+        },
+      }),
     };
 
     if (query) {
@@ -14,10 +19,14 @@ const Query = {
     return await prisma.user.findMany(opArgs);
   },
 
-  posts: async (parent, { query, take, skip }, { prisma }) => {
+  posts: async (parent, { query, first, skip, after }, { prisma }) => {
+    const cursor = after && {
+      id: after,
+    };
     const opArgs = {
-      take,
+      take: first,
       skip,
+      cursor,
       where: {
         published: true,
       },
@@ -33,7 +42,17 @@ const Query = {
     return await prisma.post.findMany(opArgs);
   },
 
-  comments: async (parent, args, { prisma }) => await prisma.comment.findMany(),
+  comments: async (parent, { first, skip, after }, { prisma }) => {
+    const cursor = after && {
+      id: after,
+    };
+
+    return await prisma.comment.findMany({
+      take: first,
+      skip,
+      cursor,
+    });
+  },
 
   post: async (parent, { id }, { prisma, request }) => {
     const userId = getUserId(request, false);
@@ -56,10 +75,20 @@ const Query = {
     return await prisma.user.findUnique({ where: { id: userId } });
   },
 
-  myPosts: async (parent, { query }, { prisma, request }) => {
+  myPosts: async (
+    parent,
+    { query, first, skip, after },
+    { prisma, request }
+  ) => {
     const userId = getUserId(request);
+    const cursor = after && {
+      id: after,
+    };
 
     const opArgs = {
+      take: first,
+      skip,
+      cursor,
       where: {
         authorId: userId,
       },
