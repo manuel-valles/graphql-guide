@@ -15,15 +15,15 @@
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "graphql-yoga": "^1.18.3",
-    "jsonwebtoken": "^8.5.1"
-  },
-  "devDependencies": {
+    "jsonwebtoken": "^8.5.1",
     "@babel/cli": "^7.15.7",
     "@babel/core": "^7.15.5",
     "@babel/node": "^7.15.4",
     "@babel/preset-env": "^7.15.6",
     "@prisma/client": "^3.1.1",
-    "nodemon": "^2.0.12",
     "prisma": "^3.1.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.12"
   }
 }

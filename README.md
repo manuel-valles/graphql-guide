@@ -166,3 +166,7 @@ A complete guide about GraphQL, using Node.js, Prisma, authentication, Apollo Cl
   ```
   - You can test it out with: `$ npm run heroku-postbuild`
 - Create Heroku app through the terminal: `$ heroku create`
+- Add the variables: `$ heroku config:set ${variable in the format 'kEY=value'} -a ${name of your app}`
+- Check the current variables: `$ heroku config -a ${name of your app}`
+- Set the remote: `$ heroku git:remote -a ${name of your app}`
+- To deploy your app within a subfolder, from the main folder run: `$ git subtree push --prefix ${name subfolder} heroku main` --> `$ git subtree push --prefix graphql-prisma heroku main`
