@@ -57,8 +57,9 @@ A complete guide about GraphQL, using Node.js, Prisma, authentication, Apollo Cl
 
 ## 2. Database Storage
 
-- [Prisma](https://www.prisma.io/) is a GraphQL specific ORM (Object Relational Mapping) that makes it easy to integrate data storage into your GraphQL apps.
-- [Prisma setup](https://www.prisma.io/docs/getting-started/setup-prisma/add-to-existing-project/relational-databases-node-postgres).
+- [Prisma](https://www.prisma.io/) is a GraphQL specific ORM (Object Relational Mapping) that makes it easy to integrate data storage into your GraphQL apps
+- [Prisma setup](https://www.prisma.io/docs/getting-started/setup-prisma/add-to-existing-project/relational-databases-node-postgres)
+- [Upgrade from Prisma 1](https://www.prisma.io/docs/guides/upgrade-guides/upgrade-from-prisma-1)
 
 ### 2.1. Setup
 
@@ -109,6 +110,7 @@ A complete guide about GraphQL, using Node.js, Prisma, authentication, Apollo Cl
 
 - [Bcryptjs package](https://www.npmjs.com/package/bcryptjs)
 - [JSON Web Token (JWT) package](https://www.npmjs.com/package/jsonwebtoken)
+
 - We need to change the application `context` to a function with a single argument that contains the information about the request where the authorization header lives. Now we can access the `request` in the resolver methods
   ```js
     context: (request) => ({
@@ -140,3 +142,27 @@ A complete guide about GraphQL, using Node.js, Prisma, authentication, Apollo Cl
 **IMPORTANT**: Fragments approach (`fragmentReplacements`) is no longer needed for `Prisma 2+`
 
 - `withFilters` [helper](https://github.com/apollographql/graphql-subscriptions#filters) is useful when publishing data to subscribers to make sure that each subscriber gets only the data it needs.
+
+## 4. Production Deployment
+
+### 4.1. Prisma Cloud
+
+- The **Prisma Data Platform** _(Early Access)_ helps developers collaborate better in projects that are using the open-source tools. One of its main features today is an online data browser.
+
+  - [Prisma Cloud](https://app.prisma.io/signup)
+  - [Further info](https://www.prisma.io/docs/concepts/components/prisma-data-platform)
+
+- **NOTE**: The difference in `Prisma2` is that you no longer need the additional Prisma server to handle database access. Prisma is not a Backend as a Service or a GraphQL API generator. Prisma is a simply an ORM replacement which will give you tools to access your database. Then you can make any kind of APIs using the data retrieved by Prisma. That might be a GraphQL API, gRPC API or a REST API.
+
+### 4.2. Heroku
+
+- Install [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli): `$ npm i -g heroku`
+- Log in Heroku: `$ heroku login`
+- For `Customizing the build process`, you can find all the needed information [here] (https://devcenter.heroku.com/articles/nodejs-support#customizing-the-build-process)
+  ```json
+  {
+    "heroku-postbuild": "babel src --out-dir dist --copy-files"
+  }
+  ```
+  - You can test it out with: `$ npm run heroku-postbuild`
+- Create Heroku app through the terminal: `$ heroku create`
