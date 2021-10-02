@@ -1,41 +1,12 @@
 import 'cross-fetch/polyfill';
-import ApolloClient, { gql } from 'apollo-boost';
+import { gql } from 'apollo-boost';
+import getClient from './utils/getClient';
+import seedDatabase, { userOne } from './utils/seedDatabase';
 import prisma from '../src/prisma';
-import hashPassword from '../src/utils/hashPassword';
 
-const port = process.env.PORT || 4000;
+const client = getClient();
 
-const client = new ApolloClient({
-  uri: `http://localhost:${port}`,
-});
-
-beforeEach(async () => {
-  await prisma.post.deleteMany();
-  await prisma.user.deleteMany();
-  const user = await prisma.user.create({
-    data: {
-      name: 'Manu Kem',
-      email: 'manu@gmail.com',
-      password: await hashPassword('manuSuperSecret'),
-    },
-  });
-  await prisma.post.createMany({
-    data: [
-      {
-        title: 'First Post',
-        body: 'This is the first post',
-        published: true,
-        authorId: user.id,
-      },
-      {
-        title: 'Second Post',
-        body: 'This is the second post',
-        published: false,
-        authorId: user.id,
-      },
-    ],
-  });
-});
+beforeEach(seedDatabase);
 
 test('Should create a new user', async () => {
   const createUser = gql`
@@ -98,26 +69,6 @@ test('Should expose public author profiles', async () => {
   expect(data.users[0].name).toBe('Manu Kem');
 });
 
-test('Should expose published posts', async () => {
-  const getPosts = gql`
-    query {
-      posts {
-        id
-        title
-        body
-        published
-      }
-    }
-  `;
-
-  const { data } = await client.query({ query: getPosts });
-
-  expect(data.posts.length).toBe(1);
-  expect(data.posts[0].title).toBe('First Post');
-  expect(data.posts[0].body).toBe('This is the first post');
-  expect(data.posts[0].published).toBe(true);
-});
-
 test('Should not log in with bad credentials', async () => {
   const login = gql`
     mutation {
@@ -133,4 +84,24 @@ test('Should not log in with bad credentials', async () => {
   await expect(client.mutate({ mutation: login })).rejects.toThrow(
     'Invalid credentials'
   );
+});
+
+test('Should fetch user profile', async () => {
+  const client = getClient(userOne.jwt);
+
+  const { data } = await client.query({
+    query: gql`
+      query {
+        me {
+          id
+          name
+          email
+        }
+      }
+    `,
+  });
+
+  expect(data.me.id).toBe(userOne.user.id);
+  expect(data.me.name).toBe(userOne.user.name);
+  expect(data.me.email).toBe(userOne.user.email);
 });
