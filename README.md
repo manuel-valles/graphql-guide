@@ -202,4 +202,11 @@ A complete guide about GraphQL, using Node.js, Prisma, authentication, Apollo Cl
 
 - Create the DB for test as a new schema, e.g. `test`. You will need to change the `DATABASE_URL` in the `.env` file, and run the prisma command: `$ npx prisma migrate dev`
 
-- **IMPORTANT**: To be able to reuse the different parts of our app, we need to split it in three main parts: `index.js`, `server.js` and `prisma.js`
+- **IMPORTANT**:
+  - To be able to reuse the different parts of our app, we need to split it in three main parts: `index.js`, `server.js` and `prisma.js`
+  - `--runInBand` allows us to run all tests serially in the current process, rather than creating a worker pool of child processes that run tests.
+    ```json
+    {
+      "test": "env-cmd -f ./config/test.env jest --watch --runInBand"
+    }
+    ```
