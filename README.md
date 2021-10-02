@@ -186,3 +186,20 @@ A complete guide about GraphQL, using Node.js, Prisma, authentication, Apollo Cl
     }
     ```
   - Apollo isn't a single library but a collection of libraries for both the client and the server. One of them is [Apollo Boost](https://www.apollographql.com/docs/react/v2/migrating/boost-migration/) which is a zero configuration client that gives you everything you need to send GraphQL queries and mutations to a GraphQL server. `$ npm i apollo-boost graphql`
+
+### 5.2. Testing
+
+- [JestJS](https://jestjs.io/docs/getting-started):
+
+  - Install Jest as dev dependency: `$ npm i -D jest`
+  - Set up the `globalSetup` and `globalTeardown`
+  - Install the same dependencies as for Apollo client and the [cross-fetch](https://www.npmjs.com/package/cross-fetch) that will be used for the polyfill: `$ npm i apollo-boost grapqhl cross-fetch`
+
+    ```js
+    import 'cross-fetch/polyfill';
+    import ApolloClient, { gql } from 'apollo-boost';
+    ```
+
+- Create the DB for test as a new schema, e.g. `test`. You will need to change the `DATABASE_URL` in the `.env` file, and run the prisma command: `$ npx prisma migrate dev`
+
+- **IMPORTANT**: To be able to reuse the different parts of our app, we need to split it in three main parts: `index.js`, `server.js` and `prisma.js`
