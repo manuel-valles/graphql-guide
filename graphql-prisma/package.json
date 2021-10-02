@@ -6,8 +6,8 @@
   "scripts": {
     "start": "node dist/index.js",
     "heroku-postbuild": "babel src --out-dir dist --copy-files",
-    "dev": "nodemon src/index.js --ext js,graphql --exec babel-node",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "env-cmd -f ./config/dev.env nodemon src/index.js --ext js,graphql --exec babel-node",
+    "test": "jest --watch"
   },
   "keywords": [],
   "author": "",
@@ -24,6 +24,8 @@
     "prisma": "^3.1.1"
   },
   "devDependencies": {
+    "env-cmd": "^10.1.0",
+    "jest": "^27.2.4",
     "nodemon": "^2.0.12"
   }
 }

@@ -170,3 +170,19 @@ A complete guide about GraphQL, using Node.js, Prisma, authentication, Apollo Cl
 - Check the current variables: `$ heroku config -a ${name of your app}`
 - Set the remote: `$ heroku git:remote -a ${name of your app}`
 - To deploy your app within a subfolder, from the main folder run: `$ git subtree push --prefix ${name subfolder} heroku main` --> `$ git subtree push --prefix graphql-prisma heroku main`
+
+## 5. Apollo Client and Testing
+
+### 5.1. Apollo Client
+
+- Create a basic project with a `/src` folder that contains an HTML and a JS file.
+- Install some useful dependencies:
+
+  - `$ npm init -y`
+  - [ParcelJS](https://parceljs.org/) is a web application bundler that offers blazing fast performance utilizing multi-core processing, and requires zero configuration. It comes with a module system and Babel support. `$ npm i -D parcel-bundler`
+    ```json
+    {
+      "start": "parcel src/index.html"
+    }
+    ```
+  - Apollo isn't a single library but a collection of libraries for both the client and the server. One of them is [Apollo Boost](https://www.apollographql.com/docs/react/v2/migrating/boost-migration/) which is a zero configuration client that gives you everything you need to send GraphQL queries and mutations to a GraphQL server. `$ npm i apollo-boost graphql`
