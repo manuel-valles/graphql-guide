@@ -64,6 +64,22 @@ test('Should create a new user', async () => {
   expect(existsUser).toBe(1);
 });
 
+test('Should not sign up with short password', async () => {
+  const createUser = gql`
+    mutation {
+      createUser(
+        data: { name: "John Doe", email: "John@gmail.com", password: "short" }
+      ) {
+        token
+      }
+    }
+  `;
+
+  await expect(client.mutate({ mutation: createUser })).rejects.toThrow(
+    'Password must be at least 8 characters long'
+  );
+});
+
 test('Should expose public author profiles', async () => {
   const getUsers = gql`
     query {
@@ -75,11 +91,11 @@ test('Should expose public author profiles', async () => {
     }
   `;
 
-  const response = await client.query({ query: getUsers });
+  const { data } = await client.query({ query: getUsers });
 
-  expect(response.data.users.length).toBe(1);
-  expect(response.data.users[0].email).toBe(null);
-  expect(response.data.users[0].name).toBe('Manu Kem');
+  expect(data.users.length).toBe(1);
+  expect(data.users[0].email).toBe(null);
+  expect(data.users[0].name).toBe('Manu Kem');
 });
 
 test('Should expose published posts', async () => {
@@ -94,10 +110,27 @@ test('Should expose published posts', async () => {
     }
   `;
 
-  const response = await client.query({ query: getPosts });
+  const { data } = await client.query({ query: getPosts });
 
-  expect(response.data.posts.length).toBe(1);
-  expect(response.data.posts[0].title).toBe('First Post');
-  expect(response.data.posts[0].body).toBe('This is the first post');
-  expect(response.data.posts[0].published).toBe(true);
+  expect(data.posts.length).toBe(1);
+  expect(data.posts[0].title).toBe('First Post');
+  expect(data.posts[0].body).toBe('This is the first post');
+  expect(data.posts[0].published).toBe(true);
+});
+
+test('Should not log in with bad credentials', async () => {
+  const login = gql`
+    mutation {
+      login(data: { email: "manu@gmail.com", password: "wrongPassword" }) {
+        token
+        user {
+          id
+        }
+      }
+    }
+  `;
+
+  await expect(client.mutate({ mutation: login })).rejects.toThrow(
+    'Invalid credentials'
+  );
 });
