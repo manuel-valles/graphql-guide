@@ -43,7 +43,7 @@ test('Should not sign up with short password', async () => {
 test('Should expose public author profiles', async () => {
   const { data } = await client.query({ query: getUsers });
 
-  expect(data.users.length).toBe(1);
+  expect(data.users.length).toBe(2);
   expect(data.users[0].email).toBe(null);
   expect(data.users[0].name).toBe('Manu Kem');
 });
